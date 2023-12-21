@@ -70,7 +70,8 @@
                     }
                 }).then((jsondata)=>{
                     id=0;//予定が狂わないようにidを戻す
-                    let d=new Date(),hour=twofig(d.getHours()),min=twofig(d.getMinutes());//日時を取得
+                    let d=new Date(),hour=twofig(d.getHours()),min=twofig(d.getMinutes()),sec=twofig(d.getSeconds());//日時を取得
+                    if(schedule!=undefined&&jsondata!=schedule){new Toast({type:"success",message:`${hour}:${min}:${sec} 予定が更新されました。`})}//予定に変化があればその旨をお知らせ
                     schedule=jsondata;//スケジュールを設定
                     for(let element of Object.keys(schedule)){//既に完了している予定をスキップ
                         if(schedule[element].hour>=hour){if(schedule[element].hour>hour||schedule[element].min>=min){
@@ -79,11 +80,11 @@
                         id++;
                     }
                     console.log("Fetched schedule successfully.");
-                },(err)=>{schedule={};new Toast({type:"danger",message:`【エラー】予定の読み込み/更新に失敗しました。\n${err.toString()}`,customButtons:[{text:"やり直す",onClick:()=>{schedule=null;fetchSchedule(path);}},{text:"別のデータを試す",onClick:()=>{path=prompt("データ、またはAPIのアドレスを入力してください");schedule=null;fetchSchedule(path);}}]})});//ここでエラーを表示
+                },(err)=>{schedule={};new Toast({type:"danger",message:`【エラー】予定の読み込み/更新に失敗しました。\n${err.toString()}`,customButtons:[{text:"やり直す",onClick:()=>{schedule="";fetchSchedule(path);}},{text:"別のデータを試す",onClick:()=>{path=prompt("データ、またはAPIのアドレスを入力してください");schedule="";fetchSchedule(path);}}]})});//ここでエラーを表示
                 return req;
             };
             fetchSchedule(path)
-            document.addEventListener("keydown",(e)=>{if(e.code=='KeyR'){schedule=null;fetchSchedule(path);}});//Rキーを押すと読み直すようにする
+            document.addEventListener("keydown",(e)=>{if(e.code=='KeyR'){schedule="";fetchSchedule(path);}});//Rキーを押すと読み直すようにする
 
             //全画面表示の処理
             document.body.getElementsByClassName("wrapper")[0].addEventListener("click",()=>{
