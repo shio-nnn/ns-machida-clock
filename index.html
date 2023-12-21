@@ -1,0 +1,137 @@
+<html>
+    <head>
+        <title>画面時計表示</title>
+        <link rel="stylesheet" href="./Toast.min.css">
+        <script src="./Toast.min.js"></script>
+        <script>
+            (function(d) {
+                var config = {
+                kitId: 'vpy7nko',
+                scriptTimeout: 3000,
+                async: true
+                },
+                h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+            })(document);
+        </script>
+        <style>
+            p{
+                text-align: center;
+                font-family: "fot-udkakugo-large-pr6n", sans-serif;
+                font-weight: 500;
+                margin: 0;
+                color: #171717;
+                line-height: 130%;
+            }
+            body{
+                margin: 0;
+            }
+            .wrapper{
+                display: flex;
+                align-items:center;
+                justify-content: center;
+                flex-direction: column;
+                height: 100vh;
+                background: #f5f5f5;
+            }
+            #date{
+                font-size: 10vh;
+            }
+            #time{
+                font-size: 20vh;
+            }
+            #nextup{
+                font-size: 7vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <p id="date"></p>
+            <p id="time"></p>
+            <p id="nextup"></p>
+        </div>
+        <script>
+            let id,schedule;//必要な変数を定義
+            const weekdays=["日","月","火","水","木","金","土"];//必要な定数を定義
+            function twofig(p){//時分秒を2桁に揃える関数を定義
+                if(p<10){return "0"+p}else{return p}
+            }
+
+            //スケジュール読み込み
+            let path=new URL(window.location.href).searchParams.get("path");
+            if(path==null){path="./schedule.json"}
+            function fetchSchedule(path){//関数を定義(後で使うため)
+                console.log("Fetching schedule...");
+                let req=fetch(path).then((res)=>{//jsonを読みに行く
+                    if(res.ok){
+                        return res.json();//読み込んだjsonをパース
+                    }else{
+                        throw new Error(`${res.status}:${res.statusText}`);//ネットワークエラーは送り返す
+                    }
+                }).then((jsondata)=>{
+                    id=0;//予定が狂わないようにidを戻す
+                    let d=new Date(),hour=twofig(d.getHours()),min=twofig(d.getMinutes());//日時を取得
+                    schedule=jsondata;//スケジュールを設定
+                    for(let element of Object.keys(schedule)){//既に完了している予定をスキップ
+                        if(schedule[element].hour>=hour){if(schedule[element].hour>hour||schedule[element].min>=min){
+                            break;
+                        }}
+                        id++;
+                    }
+                    console.log("Fetched schedule successfully.");
+                },(err)=>{schedule={};new Toast({type:"danger",message:`【エラー】予定の読み込み/更新に失敗しました。\n${err.toString()}`,customButtons:[{text:"やり直す",onClick:()=>{schedule=null;fetchSchedule(path);}},{text:"別のデータを試す",onClick:()=>{path=prompt("データ、またはAPIのアドレスを入力してください");schedule=null;fetchSchedule(path);}}]})});//ここでエラーを表示
+                return req;
+            };
+            fetchSchedule(path)
+            document.addEventListener("keydown",(e)=>{if(e.code=='KeyR'){schedule=null;fetchSchedule(path);}});//Rキーを押すと読み直すようにする
+
+            //全画面表示の処理
+            document.body.getElementsByClassName("wrapper")[0].addEventListener("click",()=>{
+                if(document.fullscreenElement){
+                    document.exitFullscreen();
+                }else{
+                    document.body.requestFullscreen();
+                }
+            });
+
+            //メイン処理
+            function main(){
+                //時計部分
+                let d=new Date(),month=d.getMonth()+1,date=d.getDate(),day=weekdays[d.getDay()],hour=twofig(d.getHours()),min=twofig(d.getMinutes()),sec=twofig(d.getSeconds());//日時を取得
+                document.getElementById("date").innerHTML=month+"/"+date+"<span style='font-size:60%;'>("+day+")</span>";//日付を表示
+                document.getElementById("time").innerHTML=hour+":"+min+"<span style='font-size:20%;'> </span><span style='font-size:60%;'>"+sec+"</span>";//時刻を表示
+                //予定表示部分
+                if(!schedule){
+                    document.getElementById("nextup").innerHTML="<span style='font-size:60%'>予定を読み込んでいます。しばらくお待ち下さい｡</span>";
+                }else{
+                    let nextup=schedule[Object.keys(schedule)[id]];//次の予定を取得
+                    if(nextup==undefined){
+                        document.getElementById("nextup").innerHTML="<span style='font-size:60%'>これ以降の予定はありません。お疲れ様でした。</span>";//予定がなければその旨を表示
+                    }else{
+                        let remainsec=(parseInt(nextup.hour)*3600+parseInt(nextup.min)*60)-(parseInt(hour)*3600+parseInt(min)*60+parseInt(sec));//残り時間を計算
+                        if(nextup.nowat==""||nextup.nowat==undefined){
+                            document.getElementById("nextup").innerHTML=Object.keys(schedule)[id]+"<span style='font-size:60%'> まで あと </span>"+twofig(Math.floor(remainsec/60))+":"+twofig(remainsec%60);//次の予定を表示
+                        }else{
+                            if(Object.keys(schedule)[id].charAt(0)=="!"){
+                                document.getElementById("nextup").innerHTML="<span style='font-size:60%'>ただいま </span>"+nextup.nowat+"<br><span style='font-size:60%'>終了まで あと </span>"+twofig(Math.floor(remainsec/60))+":"+twofig(remainsec%60);//次の予定を表示
+                            }else{
+                                document.getElementById("nextup").innerHTML="<span style='font-size:60%'>ただいま </span>"+nextup.nowat+"<br>"+Object.keys(schedule)[id]+"<span style='font-size:60%'> まで あと </span>"+twofig(Math.floor(remainsec/60))+":"+twofig(remainsec%60);//次の予定を表示
+                            }
+                        }
+                        if (nextup.hour<=hour&&nextup.min<=min){//予定時刻になったら
+                            if(Object.keys(schedule)[id].charAt(0)=="!"){//メッセージを表示
+                                new Toast({type:"success",message:`${nextup.nowat} が終了しました！`});
+                            }else{
+                                new Toast({type:"success",message:`${Object.keys(schedule)[id]} になりました！`});
+                            }
+                            id++//その予定をスキップ
+                        }
+                    }
+                }
+            }
+            main()
+            setInterval("main()",10);
+            setInterval("fetchSchedule(path)",300000);
+        </script>
+    </body>
+</html>
