@@ -71,7 +71,7 @@
                 }).then((jsondata)=>{
                     id=0;//予定が狂わないようにidを戻す
                     let d=new Date(),hour=twofig(d.getHours()),min=twofig(d.getMinutes()),sec=twofig(d.getSeconds());//日時を取得
-                    if(schedule!=undefined&&jsondata!=schedule){new Toast({type:"success",message:`${hour}:${min}:${sec} 予定が更新されました。`})}//予定に変化があればその旨をお知らせ
+                    if(schedule!=undefined&&JSON.stringify(jsondata)!=JSON.stringify(schedule)){new Toast({type:"success",message:`${hour}:${min}:${sec} 予定が更新されました。`})}//予定に変化があればその旨をお知らせ
                     schedule=jsondata;//スケジュールを設定
                     for(let element of Object.keys(schedule)){//既に完了している予定をスキップ
                         if(schedule[element].hour>=hour){if(schedule[element].hour>hour||schedule[element].min>=min){
