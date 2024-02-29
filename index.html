@@ -14,24 +14,75 @@
             })(document);
         </script>
         <style>
+            @keyframes in{
+                from,50%{
+                    transform:scale(1.1);
+                    opacity:0;
+                }
+                to{
+                    transform:scale(1);
+                    opacity:1;
+                }
+            }
             p{
                 text-align: center;
                 font-family: "fot-udkakugo-large-pr6n", sans-serif;
                 font-weight: 500;
                 margin: 0;
-                color: #171717;
+                color: #fff;
                 line-height: 130%;
+                transition:1s;
+            }
+            body.nobg p{
+                color: #171717;
+            }
+            p.loading{
+                display:block;
+                margin:.5em;
+                position:absolute;
+                z-index:-100;
+                font-size:1.2em;
+            }
+            body.nobg p.loading{
+                display:none;
             }
             body{
                 margin: 0;
+                background: #000;
+                transition:1s;
+            }
+            body.nobg{
+                background: #f5f5f5;
             }
             .wrapper{
+                position: absolute;
                 display: flex;
                 align-items:center;
                 justify-content: center;
                 flex-direction: column;
+                width: 100vw;
                 height: 100vh;
-                background: #f5f5f5;
+                transition:1s;
+                z-index:0;
+                opacity:1;
+                background: #0006;
+            }
+            body.nobg .wrapper{
+                background: #0000;
+            }
+            img{
+                display:block;
+                animation:2s in;
+                position:fixed;
+                opacity:1;
+                object-fit:cover;
+                width:100vw;
+                height:100vh;
+                transition:1s;
+                z-index:-100;
+            }
+            body.nobg img{
+                opacity:0;
             }
             #date{
                 font-size: 10vh;
@@ -45,6 +96,7 @@
         </style>
     </head>
     <body>
+        <p class="loading">背景画像を読み込み中…</p>
         <div class="wrapper">
             <p id="date"></p>
             <p id="time"></p>
@@ -95,6 +147,23 @@
                 }
             });
 
+            //背景画像の読み込み
+            const bgId=fetch("https://script.google.com/macros/s/AKfycbwegaL3xI5fjdyTuG94YZHcPA7GZGKFFgLC2U4HSLziEGkA7aYX_zAwa0t-w6YskdCMcw/exec").then((res)=>{//jsonを読みに行く
+                if(res.ok){
+                    return res.text()
+                }else{
+                    throw new Error(`${res.status}:${res.statusText}`);//ネットワークエラーは送り返す
+                }
+            }).then((bgId)=>{
+                const bg=new Image();
+                bg.onload=()=>{//ロード完了後の処理を記述
+                    let bgElem=document.createElement("img");
+                    bgElem.src=`https://lh3.googleusercontent.com/d/${bgId}`;
+                    document.body.appendChild(bgElem);
+                }
+                bg.src=`https://lh3.googleusercontent.com/d/${bgId}`;//発火
+            },(err)=>{new Toast({type:"danger",message:`【エラー】背景画像の読み込みに失敗しました。\n${err.toString()}`})});//エラーを表示
+
             //メイン処理
             function main(){
                 //時計部分
@@ -117,6 +186,11 @@
                                 document.getElementById("nextup").innerHTML="<span style='font-size:60%'>ただいま </span>"+nextup.nowat+"<br><span style='font-size:60%'>終了まで あと </span>"+twofig(Math.floor(remainsec/60))+":"+twofig(remainsec%60);//次の予定を表示
                             }else{
                                 document.getElementById("nextup").innerHTML="<span style='font-size:60%'>ただいま </span>"+nextup.nowat+"<br>"+Object.keys(schedule)[id]+"<span style='font-size:60%'> まで あと </span>"+twofig(Math.floor(remainsec/60))+":"+twofig(remainsec%60);//次の予定を表示
+                            }
+                            if(!nextup.bgflag){//背景の表示・非表示を切り替え
+                                document.body.className=""
+                            }else{
+                                document.body.className="nobg"
                             }
                         }
                         if (nextup.hour<=hour&&nextup.min<=min){//予定時刻になったら
