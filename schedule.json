@@ -1,62 +1,98 @@
 {
     "朝礼":{
-        "hour":"09",
-        "min":"30"
+        "hour":9,
+        "min":30,
+        "nowat":"",
+        "bgflag":true
     },
-    "1限目":{
-        "hour":"09",
-        "min":"45"
+    "!朝礼終了":{
+        "hour":9,
+        "min":40,
+        "nowat":"朝礼",
+        "bgflag":false
     },
-    "1限目終了":{
-        "hour":"10",
-        "min":"35"
+    "1時間目":{
+        "hour":9,
+        "min":45,
+        "nowat":"休み時間",
+        "bgflag":true
     },
-    "2限目":{
-        "hour":"10",
-        "min":"45"
+    "!1時間目終了":{
+        "hour":10,
+        "min":35,
+        "nowat":"1時間目",
+        "bgflag":false
     },
-    "2限目終了":{
-        "hour":"11",
-        "min":"35"
+    "2時間目":{
+        "hour":10,
+        "min":45,
+        "nowat":"休み時間",
+        "bgflag":true
     },
-    "3限目":{
-        "hour":"11",
-        "min":"45"
+    "!2時間目終了":{
+        "hour":11,
+        "min":35,
+        "nowat":"2時間目",
+        "bgflag":false
     },
-    "3限目終了":{
-        "hour":"12",
-        "min":"35"
+    "3時間目":{
+        "hour":11,
+        "min":45,
+        "nowat":"休み時間",
+        "bgflag":true
     },
-    "4限目":{
-        "hour":"13",
-        "min":"15"
+    "!3時間目終了":{
+        "hour":12,
+        "min":35,
+        "nowat":"3時間目",
+        "bgflag":false
     },
-    "4限目終了":{
-        "hour":"14",
-        "min":"05"
+    "4時間目":{
+        "hour":13,
+        "min":15,
+        "nowat":"昼休み",
+        "bgflag":true
     },
-    "5限目":{
-        "hour":"14",
-        "min":"15"
+    "!4時間目終了":{
+        "hour":14,
+        "min":5,
+        "nowat":"4時間目",
+        "bgflag":false
     },
-    "5限目終了":{
-        "hour":"15",
-        "min":"05"
+    "5時間目":{
+        "hour":14,
+        "min":15,
+        "nowat":"休み時間",
+        "bgflag":true
     },
-    "6限目":{
-        "hour":"15",
-        "min":"15"
+    "!5時間目終了":{
+        "hour":15,
+        "min":5,
+        "nowat":"5時間目",
+        "bgflag":false
     },
-    "6限目終了":{
-        "hour":"16",
-        "min":"05"
+    "6時間目":{
+        "hour":15,
+        "min":15,
+        "nowat":"休み時間",
+        "bgflag":true
     },
-    "夕礼終了":{
-        "hour":"16",
-        "min":"15"
+    "!6時間目終了":{
+        "hour":16,
+        "min":5,
+        "nowat":"6時間目",
+        "bgflag":false
     },
-    "下校時刻":{
-        "hour":"17",
-        "min":"30"
+    "!夕礼終了":{
+        "hour":16,
+        "min":15,
+        "nowat":"夕礼",
+        "bgflag":false
+    },
+    "最終下校":{
+        "hour":17,
+        "min":30,
+        "nowat":"放課後",
+        "bgflag":true
     }
 }
