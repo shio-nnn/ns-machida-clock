@@ -188,9 +188,9 @@
                                 document.getElementById("nextup").innerHTML="<span style='font-size:60%'>ただいま </span>"+nextup.nowat+"<br>"+Object.keys(schedule)[id]+"<span style='font-size:60%'> まで あと </span>"+twofig(Math.floor(remainsec/60))+":"+twofig(remainsec%60);//次の予定を表示
                             }
                             if(!nextup.bgflag){//背景の表示・非表示を切り替え
-                                document.body.className=""
-                            }else{
                                 document.body.className="nobg"
+                            }else{
+                                document.body.className=""
                             }
                         }
                         if (nextup.hour<=hour&&nextup.min<=min){//予定時刻になったら
