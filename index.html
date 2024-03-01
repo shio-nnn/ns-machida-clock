@@ -33,7 +33,7 @@
                 line-height: 130%;
                 transition:1s;
             }
-            body.nobg p, .toastjs{
+            body.nobg p, .toastjs p{
                 color: #171717;
             }
             p.loading{
@@ -148,7 +148,8 @@
             });
 
             //背景画像の読み込み
-            const bgId=fetch("https://script.google.com/macros/s/AKfycbwegaL3xI5fjdyTuG94YZHcPA7GZGKFFgLC2U4HSLziEGkA7aYX_zAwa0t-w6YskdCMcw/exec").then((res)=>{//jsonを読みに行く
+            const IMG_API="https://script.google.com/macros/s/AKfycbwegaL3xI5fjdyTuG94YZHcPA7GZGKFFgLC2U4HSLziEGkA7aYX_zAwa0t-w6YskdCMcw/exec"//Google DriveのファイルIDを取得するAPI
+            const bgId=fetch(IMG_API).then((res)=>{//IDを元に画像を読みに行く
                 if(res.ok){
                     return res.text()
                 }else{
